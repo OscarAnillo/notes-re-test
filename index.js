@@ -5,9 +5,27 @@ const Note = require("./Models/note");
 
 const app = express();
 
+const requestLogger = (request, response, next) => {
+  console.log("Method:", request.method);
+  console.log("Path:  ", request.path);
+  console.log("Body:  ", request.body);
+  console.log("---");
+  next();
+};
+
+const errorHandler = (error, request, response, next) => {
+  console.log(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "Malfornatted id" });
+  }
+  next(error);
+};
+
 app.use(cors());
 app.use(express.static("dist"));
 app.use(express.json()); //This is for post requests!
+app.use(requestLogger);
 
 /* GET Requests */
 app.get("/", (req, res) => {
@@ -64,10 +82,19 @@ app.patch("/api/notes/:id", (req, res) => {
     req.params.id,
     { important },
     { new: true, runValidators: true },
-  ).then((updatedNote) => {
-    res.json(updatedNote);
-  });
+  )
+    .then((updatedNote) => {
+      res.json(updatedNote);
+    })
+    .catch((err) => next(err));
 });
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
+app.use(unknownEndpoint);
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
