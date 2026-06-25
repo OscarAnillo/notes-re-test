@@ -1,0 +1,32 @@
+const express = require("express");
+const mongoose = require("mongoose");
+const config = require("./utils/config");
+const logger = require("./utils/logger");
+const notesRouter = require("./Controllers/notes");
+const middleware = require("./utils/middleware");
+const cors = require("cors");
+
+const app = express();
+
+mongoose.set("strictQuery", false);
+logger.info("Connecting to", config.MONGODB_URI);
+
+mongoose
+  .connect(config.MONGODB_URI)
+  .then(() => {
+    logger.info(`Connected to DB`);
+  })
+  .catch((error) => {
+    logger.error(error);
+  });
+
+app.use(express.static("dist"));
+app.use(express.json());
+app.use(cors());
+app.use("/api/notes", notesRouter);
+
+app.use(middleware.requestLogger);
+app.use(middleware.unknownEndpoint);
+app.use(middleware.errorHandler);
+
+module.exports = app;

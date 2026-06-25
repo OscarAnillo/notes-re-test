@@ -1,3 +1,4 @@
+/*
 const mongoose = require("mongoose");
 
 if (process.env.length < 3) {
@@ -18,10 +19,10 @@ const noteSchema = new mongoose.Schema({
 });
 
 const Note = mongoose.model("Note", noteSchema);
-const note = new Note({
-  content: "Mongoose makes things easy",
-  important: true,
-});
+// const note = new Note({
+//   content: "Mongoose makes things easy",
+//   important: true,
+// });
 
 // note.save().then((result) => {
 //   console.log("Note saved!");
@@ -34,3 +35,5 @@ const note = new Note({
 //   });
 //   mongoose.connection.close();
 // });
+
+*/
