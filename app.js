@@ -20,12 +20,13 @@ mongoose
     logger.error(error);
   });
 
+app.use(cors());
 app.use(express.static("dist"));
 app.use(express.json());
-app.use(cors());
+app.use(middleware.requestLogger);
+
 app.use("/api/notes", notesRouter);
 
-app.use(middleware.requestLogger);
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
 
