@@ -29,11 +29,11 @@ notesRouter.get("/:id", async (req, res) => {
 
 notesRouter.post("/", async (req, res) => {
   const body = req.body;
+
   const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET);
   if (!decodedToken.id) {
     return res.status(401).json({ error: "Token invalid" });
   }
-
   const user = await User.findById(decodedToken.id);
 
   const note = new Note({
